@@ -225,6 +225,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "deszz.scratchcard": {
+      "version": "https://github.com/vape/ScratchCard.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c1f26507ea9bc8f5d5f864471f4f3775d055782a"
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
