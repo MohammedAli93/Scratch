@@ -36,13 +36,20 @@ public class ScratchAndWinEvent : MonoBehaviour
 
     void OnWin(GameObject[] winners)
     {
-        Debug.Log("You won!");
+        for (int i = 0; i < winners.Length; i++)
+        {
+            var winner = winners[i];
+            var listOfChild = winner.GetComponentsInChildren<Animator>(true);
+            if (listOfChild.Length == 0)
+                continue;
+            var child = listOfChild[0].gameObject;
+            child.SetActive(true);
+        }
     }
 
     void OnLose()
     {
         LosePanel.gameObject.SetActive(true);
-        Debug.Log("You lost!");
     }
     public void LoadScene(string sceneName)
     {
@@ -59,7 +66,7 @@ public class ScratchAndWinEvent : MonoBehaviour
                 for (int i = 0; i < numbers.Length; i++)
                 {
                     var number = numbers[i];
-                    var text = number.GetComponent<TMP_Text>();
+                    var text = number.GetComponentInChildren<TMP_Text>();
                     if (text.text == winRandomNumber.ToString())
                     {
                         winners.Add(number);
@@ -101,7 +108,8 @@ public class ScratchAndWinEvent : MonoBehaviour
                     randomNumber = winRandomNumber;
                 }
             }
-            number.GetComponent<TMP_Text>().SetText(randomNumber.ToString());
+            var text = number.GetComponentInChildren<TMP_Text>();
+            text.SetText(randomNumber.ToString());
         }
     }
 
