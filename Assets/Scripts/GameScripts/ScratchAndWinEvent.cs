@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class ScratchAndWinEvent : MonoBehaviour
 {
@@ -13,8 +14,12 @@ public class ScratchAndWinEvent : MonoBehaviour
     private GameObject[] numbers = new GameObject[0];
     private bool win;
     private int winRandomNumber;
+
+    public GameObject LosePanel;
     void Start()
     {
+        LosePanel.gameObject.SetActive(false);
+
         win = UnityEngine.Random.Range(0f, 1f) < winRatio;
         winRandomNumber = UnityEngine.Random.Range(1, 999);
         controller = GetComponent<ScratchAndWinController>();
@@ -36,9 +41,13 @@ public class ScratchAndWinEvent : MonoBehaviour
 
     void OnLose()
     {
+        LosePanel.gameObject.SetActive(true);
         Debug.Log("You lost!");
     }
-
+    public void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
     void SetPixelsBrush(float progress)
     {
         if (progress >= revealPercent)
