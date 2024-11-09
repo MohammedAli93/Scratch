@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class ScratchAndWinController : MonoBehaviour
 {
-    private SpriteRenderer spriteRenderer;
     public Texture2D texture;
+    public Texture2D brushTexture1;
+    public Texture2D brushTexture2;
+    private SpriteRenderer spriteRenderer;
     private Texture2D canvasTexture;
-
-    public Texture2D brushTexture;
     public delegate void SetPixelsBrushDelegate(float progress);
     public event SetPixelsBrushDelegate OnSetPixelsBrush;
     private int totalPixels = 0;
@@ -32,7 +32,7 @@ public class ScratchAndWinController : MonoBehaviour
             return;
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 textureCoord = WorldToTextureCoord(mousePosition);
-        SetPixelsBrush(textureCoord, Color.clear);
+        SetPixelsBrush(textureCoord, brushTexture1, Color.clear);
     }
 
     private Vector2 WorldToTextureCoord(Vector2 worldPos)
@@ -48,7 +48,7 @@ public class ScratchAndWinController : MonoBehaviour
         return textureCoord;
     }
 
-    private void SetPixelsBrush(Vector2 position, Color color)
+    private void SetPixelsBrush(Vector2 position, Texture2D brushTexture, Color color)
     {
         var left = (int)position.x - brushTexture.width / 2;
         var top = (int)position.y - brushTexture.height / 2;
@@ -95,6 +95,43 @@ public class ScratchAndWinController : MonoBehaviour
     {
         canvasTexture.SetPixels(new Color[canvasTexture.width * canvasTexture.height]);
         canvasTexture.Apply();
+    }
+
+    public void RandomRevealCanvasAnimated()
+    {
+        int random = UnityEngine.Random.Range(0, 2);
+        if (random == 0)
+            StartCoroutine(RevealCanvasAnimated1());
+        else
+            StartCoroutine(RevealCanvasAnimated2());
+    }
+
+    private IEnumerator RevealCanvasAnimated1()
+    {
+        int precision = 50;
+        var rows = Mathf.CeilToInt(texture.width / (float)precision);
+        var cols = Mathf.CeilToInt(texture.height / (float)precision);
+        float totalTime = 2.0f;
+        float timePer = totalTime / (rows * cols);
+        for (int y = cols; y >= 0; y--)
+        {
+            for (int x = 0; x < rows; x++)
+            {
+                var rect = new Rect(x * precision, y * precision, precision, precision);
+                SetPixelsRect(rect, Color.clear);
+                yield return new WaitForSeconds(timePer);
+            }
+        }
+    }
+
+    private IEnumerator RevealCanvasAnimated2()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            SetPixelsBrush(new Vector2(UnityEngine.Random.Range(0, texture.width), UnityEngine.Random.Range(0, texture.height)), brushTexture2, Color.clear);
+            yield return new WaitForSeconds(0.25f);
+        }
+        RevealCanvas();
     }
 
     public bool CheckIfCanvasRectIsRevealed(Rect rect)

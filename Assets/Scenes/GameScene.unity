@@ -1110,7 +1110,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 613769832}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 785880790}
+        m_TargetAssemblyTypeName: ScratchAndWinController, Assembly-CSharp
+        m_MethodName: RandomRevealCanvasAnimated
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &613769832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1330,7 +1342,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   texture: {fileID: 2800000, guid: 51d2364f2bdf9d5479b80329ef18b796, type: 3}
-  brushTexture: {fileID: 2800000, guid: 7ab1ab74d1b5c7949ac8b3448737e7ec, type: 3}
+  brushTexture1: {fileID: 2800000, guid: 7ab1ab74d1b5c7949ac8b3448737e7ec, type: 3}
+  brushTexture2: {fileID: 2800000, guid: ae94a4982b4d2d947925b630063a41f7, type: 3}
 --- !u!212 &785880791
 SpriteRenderer:
   m_ObjectHideFlags: 0
