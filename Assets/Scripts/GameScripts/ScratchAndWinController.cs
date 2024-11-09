@@ -15,6 +15,7 @@ public class ScratchAndWinController : MonoBehaviour
     public event SetPixelsBrushDelegate OnSetPixelsBrush;
     private int totalPixels = 0;
     private int totalPixelsRevealed = 0;
+    private bool isAnimating = false;
     
     void Start()
     {
@@ -53,7 +54,7 @@ public class ScratchAndWinController : MonoBehaviour
     {
         var left = (int)position.x - brushTexture.width / 2;
         var top = (int)position.y - brushTexture.height / 2;
-        bool callEvent = false;
+        bool refreshCanvas = false;
 
         for (int x = 0; x < brushTexture.width; x++)
         {
@@ -69,15 +70,18 @@ public class ScratchAndWinController : MonoBehaviour
                 var canvasColor = canvasTexture.GetPixel(canvasX, canvasY);
                 if (canvasColor.a == 0)
                     continue;
-                callEvent = true;
+                refreshCanvas = true;
                 totalPixelsRevealed++;
                 canvasTexture.SetPixel(canvasX, canvasY, color);
             }
         }
-        if (callEvent) {
+        if (refreshCanvas) {
             canvasTexture.Apply();
-            float progress = (float)totalPixelsRevealed / totalPixels;
-            OnSetPixelsBrush?.Invoke(progress);
+            if (!isAnimating)
+            {
+                float progress = (float)totalPixelsRevealed / totalPixels;
+                OnSetPixelsBrush?.Invoke(progress);
+            }
         }
     }
 
@@ -100,6 +104,7 @@ public class ScratchAndWinController : MonoBehaviour
 
     public void RandomRevealCanvasAnimated()
     {
+        isAnimating = true;
         int random = UnityEngine.Random.Range(0, 3);
         if (random == 0)
             StartCoroutine(RevealCanvasAnimated1());
@@ -109,6 +114,12 @@ public class ScratchAndWinController : MonoBehaviour
             StartCoroutine(RevealCanvasAnimated3());
         else
             StartCoroutine(RevealCanvasAnimated4());
+    }
+
+    private void StopAnimating()
+    {
+        isAnimating = false;
+        OnSetPixelsBrush?.Invoke(1.0f);
     }
 
     private IEnumerator RevealCanvasAnimated1()
@@ -126,6 +137,7 @@ public class ScratchAndWinController : MonoBehaviour
                 yield return new WaitForSeconds(timePer);
             }
         }
+        StopAnimating();
     }
 
     private IEnumerator RevealCanvasAnimated2()
@@ -136,6 +148,7 @@ public class ScratchAndWinController : MonoBehaviour
             yield return new WaitForSeconds(0.25f);
         }
         RevealCanvas();
+        StopAnimating();
     }
 
     private IEnumerator RevealCanvasAnimated3()
@@ -165,6 +178,7 @@ public class ScratchAndWinController : MonoBehaviour
                 yield return new WaitForSeconds(timePer);
             }
         }
+        StopAnimating();
     }
 
     private IEnumerator RevealCanvasAnimated4()
@@ -194,6 +208,7 @@ public class ScratchAndWinController : MonoBehaviour
                 yield return new WaitForSeconds(timePer);
             }
         }
+        StopAnimating();
     }
 
     public bool CheckIfCanvasRectIsRevealed(Rect rect)
