@@ -10,12 +10,12 @@ public class ScratchAndWinEvent : MonoBehaviour
 {
     [Range(0f, 1f)] public float revealPercent = 0.6f;
     [Range(0f, 1f)] public float winRatio = 0.33f;
+    public GameObject LosePanel;
     private ScratchAndWinController controller;
     private GameObject[] numbers = new GameObject[0];
     private bool win;
     private int winRandomNumber;
 
-    public GameObject LosePanel;
     void Start()
     {
         LosePanel.gameObject.SetActive(false);
@@ -51,10 +51,12 @@ public class ScratchAndWinEvent : MonoBehaviour
     {
         LosePanel.gameObject.SetActive(true);
     }
+
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
     }
+
     void SetPixelsBrush(float progress)
     {
         if (progress >= revealPercent)
