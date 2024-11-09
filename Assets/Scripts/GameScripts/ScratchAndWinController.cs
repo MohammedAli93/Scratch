@@ -8,6 +8,7 @@ public class ScratchAndWinController : MonoBehaviour
     public Texture2D texture;
     public Texture2D brushTexture1;
     public Texture2D brushTexture2;
+    public Texture2D brushTexture3;
     private SpriteRenderer spriteRenderer;
     private Texture2D canvasTexture;
     public delegate void SetPixelsBrushDelegate(float progress);
@@ -99,26 +100,29 @@ public class ScratchAndWinController : MonoBehaviour
 
     public void RandomRevealCanvasAnimated()
     {
-        int random = UnityEngine.Random.Range(0, 2);
+        int random = UnityEngine.Random.Range(0, 3);
         if (random == 0)
             StartCoroutine(RevealCanvasAnimated1());
-        else
+        else if (random == 1)
             StartCoroutine(RevealCanvasAnimated2());
+        else if (random == 2)
+            StartCoroutine(RevealCanvasAnimated3());
+        else
+            StartCoroutine(RevealCanvasAnimated4());
     }
 
     private IEnumerator RevealCanvasAnimated1()
     {
-        int precision = 50;
+        int precision = 20;
+        float totalTime = 1.5f;
         var rows = Mathf.CeilToInt(texture.width / (float)precision);
         var cols = Mathf.CeilToInt(texture.height / (float)precision);
-        float totalTime = 2.0f;
         float timePer = totalTime / (rows * cols);
         for (int y = cols; y >= 0; y--)
         {
             for (int x = 0; x < rows; x++)
             {
-                var rect = new Rect(x * precision, y * precision, precision, precision);
-                SetPixelsRect(rect, Color.clear);
+                SetPixelsBrush(new Vector2(x * precision + precision / 2, y * precision + precision / 2), brushTexture3, Color.clear);
                 yield return new WaitForSeconds(timePer);
             }
         }
@@ -132,6 +136,64 @@ public class ScratchAndWinController : MonoBehaviour
             yield return new WaitForSeconds(0.25f);
         }
         RevealCanvas();
+    }
+
+    private IEnumerator RevealCanvasAnimated3()
+    {
+        int precision = 20;
+        float totalTime = 1.5f;
+        var rows = Mathf.CeilToInt(texture.width / (float)precision);
+        var cols = Mathf.CeilToInt(texture.height / (float)precision);
+        float timePer = totalTime / (rows * cols);
+        for (int y = cols; y >= 0; y--)
+        {
+            int x = 0;
+            for (int i = 0; i < cols - y; i++)
+            {
+                var position = new Vector2((x + i) * precision + precision / 2, (y + i) * precision + precision / 2);
+                SetPixelsBrush(position, brushTexture3, Color.clear);
+                yield return new WaitForSeconds(timePer);
+            }
+        }
+        for (int x = 0; x < rows; x++)
+        {
+            int y = 0;
+            for (int i = 0; i < rows - x; i++)
+            {
+                var position = new Vector2((x + i) * precision + precision / 2, (y + i) * precision + precision / 2);
+                SetPixelsBrush(position, brushTexture3, Color.clear);
+                yield return new WaitForSeconds(timePer);
+            }
+        }
+    }
+
+    private IEnumerator RevealCanvasAnimated4()
+    {
+        int precision = 20;
+        float totalTime = 1.5f;
+        var rows = Mathf.CeilToInt(texture.width / (float)precision);
+        var cols = Mathf.CeilToInt(texture.height / (float)precision);
+        float timePer = totalTime / (rows * cols);
+        for (int x = rows; x >= 0; x--)
+        {
+            int y = 0;
+            for (int i = 0; i < rows - x; i++)
+            {
+                var position = new Vector2((x + i) * precision + precision / 2, (y + i) * precision + precision / 2);
+                SetPixelsBrush(position, brushTexture3, Color.clear);
+                yield return new WaitForSeconds(timePer);
+            }
+        }
+        for (int y = 0; y < cols; y++)
+        {
+            int x = 0;
+            for (int i = 0; i < cols - y; i++)
+            {
+                var position = new Vector2((x + i) * precision + precision / 2, (y + i) * precision + precision / 2);
+                SetPixelsBrush(position, brushTexture3, Color.clear);
+                yield return new WaitForSeconds(timePer);
+            }
+        }
     }
 
     public bool CheckIfCanvasRectIsRevealed(Rect rect)

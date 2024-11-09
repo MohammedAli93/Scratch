@@ -1344,6 +1344,7 @@ MonoBehaviour:
   texture: {fileID: 2800000, guid: 51d2364f2bdf9d5479b80329ef18b796, type: 3}
   brushTexture1: {fileID: 2800000, guid: 7ab1ab74d1b5c7949ac8b3448737e7ec, type: 3}
   brushTexture2: {fileID: 2800000, guid: ae94a4982b4d2d947925b630063a41f7, type: 3}
+  brushTexture3: {fileID: 2800000, guid: f2e0f6d30b491d040923956768aa0a42, type: 3}
 --- !u!212 &785880791
 SpriteRenderer:
   m_ObjectHideFlags: 0
