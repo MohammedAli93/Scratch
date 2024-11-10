@@ -9,6 +9,7 @@ public class ScratchAndWinController : MonoBehaviour
     public Texture2D brushTexture1;
     public Texture2D brushTexture2;
     public Texture2D brushTexture3;
+    public GameObject particles;
     private SpriteRenderer spriteRenderer;
     private Texture2D canvasTexture;
     public delegate void SetPixelsBrushDelegate(float progress);
@@ -50,7 +51,22 @@ public class ScratchAndWinController : MonoBehaviour
         return textureCoord;
     }
 
-    private void SetPixelsBrush(Vector2 position, Texture2D brushTexture, Color color)
+    private Vector2 TextureCoordToWorldCoord(Vector2 textureCoord)
+    {
+        Vector2 spritePos = spriteRenderer.transform.position;
+        Vector2 relativePos = new Vector2(
+            textureCoord.x * spriteRenderer.sprite.bounds.size.x / texture.width,
+            textureCoord.y * spriteRenderer.sprite.bounds.size.y / texture.height
+        );
+        relativePos.x -= spriteRenderer.sprite.bounds.size.x / 2;
+        relativePos.y -= spriteRenderer.sprite.bounds.size.y / 2;
+        relativePos.x += 0.25f;
+        relativePos.y -= isAnimating ? 2.0f : 0.75f;
+        Vector2 worldPos = relativePos - spritePos;
+        return worldPos;
+    }
+
+    private void SetPixelsBrush(Vector2 position, Texture2D brushTexture, Color color, bool showParticles = true)
     {
         var left = (int)position.x - brushTexture.width / 2;
         var top = (int)position.y - brushTexture.height / 2;
@@ -77,6 +93,8 @@ public class ScratchAndWinController : MonoBehaviour
         }
         if (refreshCanvas) {
             canvasTexture.Apply();
+            if (showParticles)
+                Instantiate(particles, TextureCoordToWorldCoord(position), Quaternion.identity);
             if (!isAnimating)
             {
                 float progress = (float)totalPixelsRevealed / totalPixels;
@@ -125,27 +143,32 @@ public class ScratchAndWinController : MonoBehaviour
     private IEnumerator RevealCanvasAnimated1()
     {
         int precision = 20;
-        float totalTime = 1.5f;
+        float totalTime = 0.75f;
         var rows = Mathf.CeilToInt(texture.width / (float)precision);
         var cols = Mathf.CeilToInt(texture.height / (float)precision);
         float timePer = totalTime / (rows * cols);
+        bool showParticles = false;
         for (int y = cols; y >= 0; y--)
         {
             for (int x = 0; x < rows; x++)
             {
-                SetPixelsBrush(new Vector2(x * precision + precision / 2, y * precision + precision / 2), brushTexture3, Color.clear);
+                SetPixelsBrush(new Vector2(x * precision + precision / 2, y * precision + precision / 2), brushTexture3, Color.clear, showParticles);
+                showParticles = !showParticles;
                 yield return new WaitForSeconds(timePer);
             }
         }
+        yield return new WaitForSeconds(0.1f);
         StopAnimating();
     }
 
     private IEnumerator RevealCanvasAnimated2()
     {
+        bool showParticles = false;
         for (int i = 0; i < 6; i++)
         {
-            SetPixelsBrush(new Vector2(UnityEngine.Random.Range(0, texture.width), UnityEngine.Random.Range(0, texture.height)), brushTexture2, Color.clear);
-            yield return new WaitForSeconds(0.25f);
+            SetPixelsBrush(new Vector2(UnityEngine.Random.Range(0, texture.width), UnityEngine.Random.Range(0, texture.height)), brushTexture2, Color.clear, showParticles);
+            showParticles = !showParticles;
+            yield return new WaitForSeconds(0.125f);
         }
         RevealCanvas();
         StopAnimating();
@@ -154,17 +177,19 @@ public class ScratchAndWinController : MonoBehaviour
     private IEnumerator RevealCanvasAnimated3()
     {
         int precision = 20;
-        float totalTime = 1.5f;
+        float totalTime = 0.75f;
         var rows = Mathf.CeilToInt(texture.width / (float)precision);
         var cols = Mathf.CeilToInt(texture.height / (float)precision);
         float timePer = totalTime / (rows * cols);
+        bool showParticles = false;
         for (int y = cols; y >= 0; y--)
         {
             int x = 0;
             for (int i = 0; i < cols - y; i++)
             {
                 var position = new Vector2((x + i) * precision + precision / 2, (y + i) * precision + precision / 2);
-                SetPixelsBrush(position, brushTexture3, Color.clear);
+                SetPixelsBrush(position, brushTexture3, Color.clear, showParticles);
+                showParticles = !showParticles;
                 yield return new WaitForSeconds(timePer);
             }
         }
@@ -174,7 +199,8 @@ public class ScratchAndWinController : MonoBehaviour
             for (int i = 0; i < rows - x; i++)
             {
                 var position = new Vector2((x + i) * precision + precision / 2, (y + i) * precision + precision / 2);
-                SetPixelsBrush(position, brushTexture3, Color.clear);
+                SetPixelsBrush(position, brushTexture3, Color.clear, showParticles);
+                showParticles = !showParticles;
                 yield return new WaitForSeconds(timePer);
             }
         }
@@ -184,17 +210,19 @@ public class ScratchAndWinController : MonoBehaviour
     private IEnumerator RevealCanvasAnimated4()
     {
         int precision = 20;
-        float totalTime = 1.5f;
+        float totalTime = 0.75f;
         var rows = Mathf.CeilToInt(texture.width / (float)precision);
         var cols = Mathf.CeilToInt(texture.height / (float)precision);
         float timePer = totalTime / (rows * cols);
+        bool showParticles = false;
         for (int x = rows; x >= 0; x--)
         {
             int y = 0;
             for (int i = 0; i < rows - x; i++)
             {
                 var position = new Vector2((x + i) * precision + precision / 2, (y + i) * precision + precision / 2);
-                SetPixelsBrush(position, brushTexture3, Color.clear);
+                SetPixelsBrush(position, brushTexture3, Color.clear, showParticles);
+                showParticles = !showParticles;
                 yield return new WaitForSeconds(timePer);
             }
         }
@@ -204,7 +232,8 @@ public class ScratchAndWinController : MonoBehaviour
             for (int i = 0; i < cols - y; i++)
             {
                 var position = new Vector2((x + i) * precision + precision / 2, (y + i) * precision + precision / 2);
-                SetPixelsBrush(position, brushTexture3, Color.clear);
+                SetPixelsBrush(position, brushTexture3, Color.clear, showParticles);
+                showParticles = !showParticles;
                 yield return new WaitForSeconds(timePer);
             }
         }
