@@ -126,7 +126,6 @@ public class ScratchAndWinController : MonoBehaviour
     public void RandomRevealCanvasAnimated()
     {
         isAnimating = true;
-        // StartCoroutine(RevealCanvasAnimated1());
         int random = UnityEngine.Random.Range(0, 3);
         if (random == 0)
             StartCoroutine(RevealCanvasAnimated1());
