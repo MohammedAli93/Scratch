@@ -51,19 +51,22 @@ public class ScratchAndWinController : MonoBehaviour
         return textureCoord;
     }
 
-    private Vector2 TextureCoordToWorldCoord(Vector2 textureCoord)
+    private Vector3 TextureCoordToWorldCoord(Vector2 textureCoord)
     {
-        Vector2 spritePos = spriteRenderer.transform.position;
-        Vector2 relativePos = new Vector2(
-            textureCoord.x * spriteRenderer.sprite.bounds.size.x / texture.width,
-            textureCoord.y * spriteRenderer.sprite.bounds.size.y / texture.height
+        // Get the size of the sprite in pixels
+        Vector2 spriteSize = spriteRenderer.sprite.rect.size;
+
+        // Convert pixel coordinates (0,0 at bottom-left) to normalized coordinates (0,0 to 1,1)
+        Vector2 normalizedPosition = new Vector2(textureCoord.x / spriteSize.x, textureCoord.y / spriteSize.y);
+
+        // Convert normalized position to local position on the sprite
+        Vector2 localPosition = new Vector2(
+            (normalizedPosition.x - 0.5f) * spriteRenderer.bounds.size.x,
+            (normalizedPosition.y - 0.5f) * spriteRenderer.bounds.size.y
         );
-        relativePos.x -= spriteRenderer.sprite.bounds.size.x / 2;
-        relativePos.y -= spriteRenderer.sprite.bounds.size.y / 2;
-        relativePos.x += 0.25f;
-        relativePos.y -= isAnimating ? 2.0f : 0.75f;
-        Vector2 worldPos = relativePos - spritePos;
-        return worldPos;
+
+        // Translate to world position
+        return spriteRenderer.transform.TransformPoint(localPosition);
     }
 
     private void SetPixelsBrush(Vector2 position, Texture2D brushTexture, Color color, bool showParticles = true)
@@ -123,6 +126,7 @@ public class ScratchAndWinController : MonoBehaviour
     public void RandomRevealCanvasAnimated()
     {
         isAnimating = true;
+        // StartCoroutine(RevealCanvasAnimated1());
         int random = UnityEngine.Random.Range(0, 3);
         if (random == 0)
             StartCoroutine(RevealCanvasAnimated1());

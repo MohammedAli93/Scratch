@@ -1393,6 +1393,7 @@ MonoBehaviour:
   brushTexture1: {fileID: 2800000, guid: 7ab1ab74d1b5c7949ac8b3448737e7ec, type: 3}
   brushTexture2: {fileID: 2800000, guid: ae94a4982b4d2d947925b630063a41f7, type: 3}
   brushTexture3: {fileID: 2800000, guid: f2e0f6d30b491d040923956768aa0a42, type: 3}
+  particles: {fileID: 6577473449295309394, guid: 0ff93c42ced7a3246b1c9827848a0555, type: 3}
 --- !u!212 &785880791
 SpriteRenderer:
   m_ObjectHideFlags: 0
